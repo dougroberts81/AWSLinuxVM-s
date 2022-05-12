@@ -1,0 +1,32 @@
+---
+- name: Web Server Admin Setup
+  hosts: webserver
+  become: true
+
+  tasks:
+  - name: create admin group
+    ansible.builtin.group:
+      name: admin
+      state: present
+
+  - name: grant admin sudo access
+    community.general.sudoers:
+      name: admin
+      state: present
+      group: admin
+      commands: /usr/bin/systemctl restart httpd
+
+  - name: add user
+    ansible.builtin.user:
+      name: webadmin
+      groups: admin
+      #generate_ssh_key: yes
+      #ssh_key_bits: 2048
+      #ssh_key_file: .ssh/id_rsa
+#Create key pair on Jumpbox, and push to Web Server below
+
+  - name: Set authorized key taken from file
+    ansible.posix.authorized_key:
+      user: webadmin
+      state: present
+      key: "{{ lookup('file', '/home/gbadmin/.ssh/webserveradmin.pub') }}"

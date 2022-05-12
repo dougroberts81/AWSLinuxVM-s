@@ -1,0 +1,10 @@
+---
+- name: OpenVPN Configuration
+  hosts: ubuntuvpn
+  become: true
+
+  roles:
+  - role: kyl191.openvpn
+    openvpn_server_hostname: '{{ ansible_host }}'
+    clients:
+    - client1

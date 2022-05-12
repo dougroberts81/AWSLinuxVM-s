@@ -1,0 +1,26 @@
+---
+- name: Global Admin Push
+  hosts: ubuntuvpn
+  become: true
+
+  tasks:
+    - name: add user
+      ansible.builtin.user:
+        name: gbadmin
+        shell: /bin/bash
+    - name: grant admin sudo access
+      community.general.sudoers:
+        name: gbadmin all
+        user: gbadmin
+        state: present
+        commands: ALL
+        nopassword: true
+      #generate_ssh_key: yes
+      #ssh_key_bits: 2048
+      #ssh_key_file: .ssh/id_rsa
+
+    - name: Set authorized key taken from file
+      ansible.posix.authorized_key:
+        user: gbadmin
+        state: present
+        key: "{{ lookup('file', '/home/gbadmin/.ssh/gbadmin.pub') }}"

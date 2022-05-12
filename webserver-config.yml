@@ -1,0 +1,13 @@
+---
+- name: Web Server Configuration
+  hosts: webserver
+  become: true
+  vars_files:
+    - /home/gbadmin/ansible/var/main.yml
+  roles:
+    - { role: geerlingguy.apache }
+  tasks: 
+   - name: latest version of apache
+     yum:
+      name: httpd
+      state: latest
